@@ -17,3 +17,12 @@ make shared
 ```
 
 # Lession 02: File I/O (2025.04.02)
+```
+* Files in Linux
+* Operations on file
+* File Management
+* File locking
+```
+
+
+
