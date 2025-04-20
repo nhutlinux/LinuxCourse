@@ -33,4 +33,13 @@ make shared
 * Orphant and zombie process
 ```
 
+# Lession 04: Linux Thread
+```
+* Compare process & thread
+* Operations on thread
+* Thread management
+* Thread synchronization
+* Thread Sync - Mutex Lock
+* Thread Sync - Conditional Variable
+```
 
