@@ -3,6 +3,7 @@
     "files.associations": {
         "unistd.h": "c",
         "ctype.h": "c",
-        "un.h": "c"
+        "un.h": "c",
+        "errno.h": "c"
     }
 }
