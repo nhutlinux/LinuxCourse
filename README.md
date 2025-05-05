@@ -60,3 +60,9 @@ make shared
 * signal blocking and unblocking
 ```
 
+# Lession 07: IPC Pipe
+```
+* Reading from a pipe
+* Writing to a pipe
+* Creating 2 pipes for bi-direction communication.
+```

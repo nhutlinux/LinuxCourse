@@ -4,6 +4,8 @@
         "unistd.h": "c",
         "ctype.h": "c",
         "un.h": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "types.h": "c",
+        "socket.h": "c"
     }
 }
