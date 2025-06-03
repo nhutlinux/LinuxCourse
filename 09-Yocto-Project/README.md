@@ -2,6 +2,7 @@
 
 ## Build and run virtual images with QEMU, create layer and Hello World
 
-![Run Hello World App On QEMU image](image.png)
+![alt text](image.png "Run hello world app on QEMU image")
+
 
 ## 
