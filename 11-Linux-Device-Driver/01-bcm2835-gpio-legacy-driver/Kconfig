@@ -1,0 +1,9 @@
+menu "mgpio device driver"
+
+config MGPIO
+	tristate "mgpio device driver"
+	depends on ARM
+	default y if ARM
+	help
+	   Select this option to run mgpio module.
+endmenu
