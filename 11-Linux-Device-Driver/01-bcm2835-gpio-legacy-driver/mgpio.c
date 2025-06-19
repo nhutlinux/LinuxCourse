@@ -1,5 +1,5 @@
 #include <linux/module.h>
-#include <linux/gpio.h>
+#include <linux/io.h>
 #include "mgpio.h"
 
 static void __iomem *gpio_base;
@@ -16,10 +16,10 @@ static int __init mgpio_driver_init(void)
     }
 
     /* Configure GPIO27 as Output */
-    reg = ioread32(gpio_base + GPIO_FSEL_OFFSET + (GPIO_NUMBER_27 / 10) * 4);
+    reg = ioread32(gpio_base + GPIO_FSEL_OFFSET + ((GPIO_NUMBER_27 - (GPIO_NUMBER_27 % 10)) / 10) * 4);
     reg &= ~(0x7 << ((GPIO_NUMBER_27 % 10) * 3)); // Clear bits for GPIO27
     reg |= (0x1 << ((GPIO_NUMBER_27 % 10) * 3)); // Set GPIO27 as Output
-    iowrite32(reg, gpio_base + GPIO_FSEL_OFFSET + (GPIO_NUMBER_27 / 10) * 4);
+    iowrite32(reg, gpio_base + GPIO_FSEL_OFFSET + ((GPIO_NUMBER_27 - (GPIO_NUMBER_27 % 10)) / 10) * 4);
 
     /* Set GPIO27 to High */
     iowrite32(1 << GPIO_NUMBER_27, gpio_base + GPIO_SET_0_OFFSET);
