@@ -10,7 +10,7 @@ static int __init mgpio_driver_init(void)
 
     /* Confirm if GPIO is valid */
     if (!gpio_is_valid(GPIO_NUMBER_27)) {
-        pr_infor("Invalid Red LED\n");
+        pr_info("DevLinux: GPIO27 is invalid\n");
         return -ENODEV;
     }
 
