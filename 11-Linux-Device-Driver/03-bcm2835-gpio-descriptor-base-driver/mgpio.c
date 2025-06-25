@@ -1,8 +1,10 @@
-#include <linux/module.h> /* Define module_init(), module_exit() */
+#include <linux/module.h>
 #include <linux/fs.h>     /* Define alloc_chrdev_region(), register_chrdev_region() */
 #include <linux/device.h> /* Define class_create(), device_create() */
 #include <linux/cdev.h>   /* Define cdev_init(), cdev_add() */
-#include <linux/gpio.h>                 /* For Legacy integer based GPIO */
+#include <linux/platform_device.h>      /* For Platform devices */
+#include <linux/gpio/consumer.h>        /* For Descriptor based GPIO */
+#include <linux/of.h>                   /* For Device Tree support */
 
 #define DRIVER_AUTHOR "DevLinux linuxfromscratch@gmail.com"
 #define DRIVER_DESC "Hello World Kernel Module DevLinux"
@@ -11,9 +13,10 @@
 
 #define NPAGES (1)
 
-#define GPIO_NUMBER_27      539//27
-#define LOW                 0
-#define HIGH                1
+#define LOW         1
+#define HIGH        0
+
+struct gpio_desc *gpio_27;
 
 static int m_open(struct inode *inode, struct file *file);
 static ssize_t m_read(struct file *file, char __user *user_buf, size_t size, loff_t *offset);
@@ -34,6 +37,11 @@ static struct file_operations fops = {
     .read = m_read,
     .write = m_write,
     .release = m_release,
+};
+
+static const struct of_device_id gpio_dt_ids[] = {
+    { .compatible = "gpio-descriptor-base", },
+    { /* sentinel */ }
 };
 
 static int m_open(struct inode *inode, struct file *file)
@@ -83,10 +91,10 @@ static ssize_t m_write(struct file *file, const char __user *user_buf, size_t si
     pr_info("DevLinux: Data from user: %s", m_dev.kmalloc_ptr);
 
     if (strncmp(m_dev.kmalloc_ptr, "on", strlen("on")) == 0) {
-        gpio_direction_output(GPIO_NUMBER_27, HIGH);
+        gpiod_set_value(gpio_27, HIGH);
         pr_info("DevLinux: Turn LED on\n");
     } else if (strncmp(m_dev.kmalloc_ptr, "off", strlen("off")) == 0) {
-        gpio_direction_output(GPIO_NUMBER_27, LOW);
+        gpiod_set_value(gpio_27, LOW);
         pr_info("DevLinux: Turn LED off\n");
     }
 
@@ -102,9 +110,8 @@ static int m_release(struct inode *inode, struct file *file)
     return 0;
 }
 
-
 /* Constructor */
-static int __init chdev_init(void)
+static int chdev_init(void)
 {
     /* 1.0 Dynamic allocating device number (cat /proc/devvices) */
     if (alloc_chrdev_region(&m_dev.dev_num, 0, 1, "dev_num") < 0) {
@@ -146,10 +153,6 @@ static int __init chdev_init(void)
     /* 5.0 Allocate kernel buffer */
     m_dev.kmalloc_ptr = kmalloc(NPAGES * PAGE_SIZE, GFP_KERNEL);
 
-    /* 6.0 Init GPIO 27 */
-    gpio_request(GPIO_NUMBER_27, "gpio_27");
-    gpio_direction_output(GPIO_NUMBER_27, LOW);
-
     pr_info("DevLinux: Character device added successfully\n");
     pr_info("DevLinux: Hello World Kernel Module initialized successfully\n");
 
@@ -166,15 +169,8 @@ rm_device_number:
 }
 
 /* Destructor */
-static void __exit chdev_exit(void)
+static void chdev_exit(void)
 {
-    /* Set GPIO 27 to LOW before exiting */
-    gpio_set_value(GPIO_NUMBER_27, LOW);
-    pr_info("DevLinux: GPIO27 set to Low, status: %d\n", gpio_get_value(GPIO_NUMBER_27));
-
-    /* Free GPIO 27 */
-    gpio_free(GPIO_NUMBER_27);
-
     device_destroy(m_dev.m_class, m_dev.dev_num);
     cdev_del(&m_dev.m_cdev);
     class_destroy(m_dev.m_class);
@@ -182,8 +178,43 @@ static void __exit chdev_exit(void)
     pr_info("DevLinux: Goodbye World Kernel Module\n");
 }
 
-module_init(chdev_init);
-module_exit(chdev_exit);
+static int mgpio_driver_probe(struct platform_device *pdev)
+{
+    struct device *dev = &pdev->dev;
+
+    /* Get GPIO descriptor for GPIO 27 */
+    gpio_27 = gpiod_get(dev, "led27", GPIOD_OUT_LOW);
+    gpiod_set_value(gpio_27, LOW);
+    
+    /* */
+    chdev_init();
+
+    return 0;
+}
+
+static void mgpio_driver_remove(struct platform_device *pdev)
+{
+    /* Set GPIO 27 to LOW before removing */
+    gpiod_set_value(gpio_27, LOW);
+    gpiod_put(gpio_27);
+    pr_info("DevLinux: %s %d\n", __func__, __LINE__);
+
+    chdev_exit();
+}
+
+static struct platform_driver mgpio = {
+    .probe = mgpio_driver_probe,
+    .remove = mgpio_driver_remove,
+    .driver = {
+        .name = "gpio-descriptor-base",
+        .of_match_table = of_match_ptr(gpio_dt_ids),
+        .owner = THIS_MODULE,
+    },
+};
+
+module_platform_driver(mgpio);
+// module_init(chdev_init);
+// module_exit(chdev_exit);
 
 MODULE_LICENSE(DRIVER_LICENSE);
 MODULE_AUTHOR(DRIVER_AUTHOR);

@@ -1,0 +1,10 @@
+menu "DevLinux: Module GPIO Device Driver"
+
+config MGPIO
+        tristate
+        prompt "DevLinux: Module GPIO Device Driver"
+        depends on ARM || ARM64
+        default m if ARM || ARM64
+        help
+           Select this option to run mgpio module.
+endmenu

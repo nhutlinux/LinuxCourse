@@ -1,0 +1,21 @@
+# Add MGPIO node to device tree of SoC (*.dts)
+# -> Q: How to determine DTS filename of your SoC ?
+# -> A: Find *.dtb file in directory: /boot of the image.
+# -> For example: bcm2710-rpi-zero-2.dtb (Raspberrypi Zero 2 W) => device tree filename is bcm2710-rpi-zero-2.dts
+
+/* ================ mgpio node' content ================== */
+
+/ {
+    mgpio: mgpio {
+        compatible = "gpio-descriptor-base";
+        led27-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
+        status = "okay";
+    };
+};
+
+/* ======================================================= */
+
+
+
+
+
