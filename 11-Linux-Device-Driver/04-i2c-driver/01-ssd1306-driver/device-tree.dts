@@ -1,0 +1,19 @@
+/*
+ * Add the following to your device tree source file
+ * to enable the I2C device driver.
+ */
+
+&i2c1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c1_pins>;
+	clock-frequency = <100000>;
+
+	ssd1306@3c {
+		compatible = "solomon,ssd1306";
+		status = "okay";
+		reg = <0x3c>;
+
+		width = <128>;
+		height = <64>;
+	};
+};
