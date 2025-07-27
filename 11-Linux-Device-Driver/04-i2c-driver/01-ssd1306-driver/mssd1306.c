@@ -121,29 +121,45 @@ static void ssd1306InitDisplay(ssd1306_i2c_module_t *module)
 
     /* Initialize the SSD1306 display */
     ssd1306Write(module, true, 0xAE);   // Display off
+    
     ssd1306Write(module, true, 0xD5);   // Set display clock divide ratio/oscillator frequency
     ssd1306Write(module, true, 0x80);   // Set divide ratio
+    
     ssd1306Write(module, true, 0xA8);   // Set multiplex ratio
-    ssd1306Write(module, true, 0x3F);   // 1/64 duty
+    // ssd1306Write(module, true, 0x3F);   // 1/64 duty (64 rows)
+    ssd1306Write(module, true, 0x1F);   // 1/32 duty (32 rows)
+
     ssd1306Write(module, true, 0xD3);   // Set display offset
     ssd1306Write(module, true, 0x00);   // No offset
     ssd1306Write(module, true, 0x40);   // Set display start line to 0
-    ssd1306Write(module, true, 0x8D);   // Charge pump setting
-    ssd1306Write(module, true, 0x14);   // Enable charge pump
-    ssd1306Write(module, true, 0x20);   // Memory addressing mode
-    ssd1306Write(module, true, 0x00);   // Horizontal addressing mode
+
     ssd1306Write(module, true, 0xA1);   // Set segment re-map
+
     ssd1306Write(module, true, 0xC8);   // Set COM output scan direction
+
     ssd1306Write(module, true, 0xDA);   // Set COM pins hardware configuration
-    ssd1306Write(module, true, 0x12);
+    ssd1306Write(module, true, 0x02);
+    // ssd1306Write(module, true, 0x12);
+
     ssd1306Write(module, true, 0x81);   // Set contrast control
     ssd1306Write(module, true, 0x7F);
-    ssd1306Write(module, true, 0xD9);   // Set pre-charge period
-    ssd1306Write(module, true, 0xF1);
+
     ssd1306Write(module, true, 0xDB);   // Set VCOMH deselect level
     ssd1306Write(module, true, 0x40);
+
+    ssd1306Write(module, true, 0x20);   // Memory addressing mode
+    ssd1306Write(module, true, 0x02);   // Horizontal addressing mode
+    // ssd1306Write(module, true, 0x00);   // Horizontal addressing mode
+
+    ssd1306Write(module, true, 0x8D);   // Charge pump setting
+    ssd1306Write(module, true, 0x14);   // Enable charge pump
+
+    ssd1306Write(module, true, 0xD9);   // Set pre-charge period
+    ssd1306Write(module, true, 0xF1);
+
     ssd1306Write(module, true, 0xA4);   // Entire display ON in normal mode
     ssd1306Write(module, true, 0xA6);   // Set normal display
+
     ssd1306Write(module, true, 0xAF);   // Display ON
 }
 
