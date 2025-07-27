@@ -18,7 +18,7 @@
 
 /* SSD1306 Display Specs */
 #define SSD1306_MAX_SEG     128
-#define SSD1306_MAX_LINE    5
+#define SSD1306_MAX_LINE    4
 #define SSD1306_FONT_SIZE   5
 #define SSD1306_MAX_BUFF    256
 #define SSD1306_I2C_ADDRESS 0x3C
