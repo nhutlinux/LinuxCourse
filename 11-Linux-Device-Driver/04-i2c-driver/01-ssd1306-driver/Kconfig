@@ -1,0 +1,10 @@
+menu "DevLinux: SSD1306 I2C Device Driver"
+
+config MSSD1306
+        tristate
+        prompt "DevLinux: SSD1306 I2C Device Driver"
+        depends on ARM || ARM64
+        default m if ARM || ARM64
+        help
+           Select this option to run ssd1306 module.
+endmenu
